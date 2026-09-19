@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repository
@@ -21,26 +21,16 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential ccache git python3-pip libffi-dev libssl-dev openjdk-17-jdk
+          sudo apt-get install -y build-essential ccache git python3-pip python3-setuptools libffi-dev libssl-dev ant autoconf libtool zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake zip unzip openjdk-17-jdk
           pip install --upgrade pip
-          pip install buildozer cython
-
-      - name: Setup Buildozer Config
-        run: |
-          if [ ! -f buildozer.spec ]; then
-            buildozer init
-          fi
-          sed -i 's/^requirements = .*/requirements = python3,kivy/' buildozer.spec
-          sed -i 's/^title = .*/title = SAIKO AI BROGIKTER/' buildozer.spec
-          sed -i 's/^package.name = .*/package.name = saikoai/' buildozer.spec
-          sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
+          pip install --upgrade buildozer kivy cython
 
       - name: Build APK with Buildozer
         run: |
-          buildozer -v android debug
+          yes | buildozer -v android debug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SAIKO-AI-BROGIKTER-APK
+          name: saiko-ai-apk
           path: bin/*.apk
