@@ -121,7 +121,7 @@
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${API_KEY}`
+                        "Authorization": "Bearer " + API_KEY
                     },
                     body: JSON.stringify({
                         model: "gpt-3.5-turbo",
@@ -133,13 +133,16 @@
                 });
 
                 const data = await response.json();
-                if (data.choices && data.choices[0].message.content) {
+                
+                if (data.choices && data.choices[0] && data.choices[0].message) {
                     botDiv.textContent = data.choices[0].message.content;
+                } else if (data.error) {
+                    botDiv.textContent = "خطأ في المفتاح: " + (data.error.message || "المفتاح غير مفعل أو بدون رصيد");
                 } else {
-                    botDiv.textContent = "عذراً، حدث خطأ أو أن مفتاح الـ API غير مفعل/منتهي الرصيد.";
+                    botDiv.textContent = "عذراً، حدث خطأ أثناء معالجة الطلب.";
                 }
             } catch (error) {
-                botDiv.textContent = "عذراً، تعذر الاتصال بالخادم حالياً.";
+                botDiv.textContent = "تعذر الاتصال بالخادم. يرجى التأكد من الاتصال بالإنترنت.";
             }
 
             chatBox.scrollTop = chatBox.scrollHeight;
