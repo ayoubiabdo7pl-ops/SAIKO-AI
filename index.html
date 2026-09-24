@@ -101,7 +101,6 @@
     </div>
 
     <script>
-        // مفتاح الـ API الخاص بك
         const apiKey = "AQ.Ab8RN6L1v3C_aw_CPlpUgt6QoaMVUGle37TwlP9UAgxzaZoSJw";
 
         async function sendMessage() {
@@ -115,7 +114,8 @@
             const loadingMessage = appendMessage("جاري التفكير...", 'bot-message');
 
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                // استخدام نموذج gemini-2.5-flash المتوافق مع API Key الحديث
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -125,13 +125,15 @@
 
                 const data = await response.json();
                 
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
                     loadingMessage.textContent = data.candidates[0].content.parts[0].text;
+                } else if (data.error) {
+                    loadingMessage.textContent = "خطأ من السيرفر: " + (data.error.message || "تأكد من صلاحية المفتاح");
                 } else {
-                    loadingMessage.textContent = "عذراً، حدثت مشكلة أثناء المعالجة.";
+                    loadingMessage.textContent = "عذراً، لم أتمكن من فهم الإجابة.";
                 }
             } catch (error) {
-                loadingMessage.textContent = "عذراً، فشل الاتصال بالسيرفر. تحقق من المفتاح أو الاتصال.";
+                loadingMessage.textContent = "حدث خطأ أثناء الاتصال. يرجى التأكد من المفتاح والإنترنت.";
             }
         }
 
