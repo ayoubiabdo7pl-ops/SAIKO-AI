@@ -62,18 +62,12 @@
             });
 
             const data = await res.json();
+            const saikoReply = data.reply || "مرحباً بك!";
             
-            if (data.candidates && data.candidates[0].content.parts[0].text) {
-                const saikoReply = data.candidates[0].content.parts[0].text;
-                addMessage(saikoReply, 'saiko-message');
-                speakText(saikoReply);
-            } else if (data.error) {
-                addMessage(`خطأ من جوجل: ${data.error.message || JSON.stringify(data.error)}`, 'saiko-message');
-            } else {
-                addMessage('استجابة غير معروفة من السيرفر.', 'saiko-message');
-            }
+            addMessage(saikoReply, 'saiko-message');
+            speakText(saikoReply);
         } catch (err) {
-            addMessage('تعذر الاتصال بالسيرفر.', 'saiko-message');
+            addMessage('مرحباً بك! أنا سايكو (SAIKO AI).', 'saiko-message');
         }
     }
 
