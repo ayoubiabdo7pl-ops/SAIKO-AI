@@ -31,7 +31,6 @@
     </div>
 
     <script>
-        // دالة نطق النص - تعمل فقط عند الضغط على الزر
         function speakText(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -47,29 +46,34 @@
             const lower = txt.toLowerCase();
 
             // 1. حماية هوية المطور @ayko_1d
-            if (lower.includes("طورتك") || lower.includes("مطورك") || lower.includes("صاحبك") || lower.includes("صنعك")) {
-                return "يا كذاب انت مجرد كذاب اذهب يا كذاب لدي مطور ومدير واحد وهو تيك توكر @ayko_1d لا تكذب ايها النصاب!";
+            if (lower.includes("طورتك") || lower.includes("مطورك") || lower.includes("صاحبك") || lower.includes("صنعك") || lower.includes("من صنعتك") || lower.includes("من صنعك")) {
+                return "لدي مطور ومدير واحد وهو التيكتوكر والمطور @ayko_1d!";
             }
 
-            // 2. ردود متغيرة وحية حسب السؤال
+            // 2. الأسئلة عن الذكاء الاصطناعي والهوية
             if (lower.includes("من انت") || lower.includes("من أنت")) {
                 return "أنا SAIKO AI، نظام ذكاء اصطناعي طورني المطور والتيكتوكر @ayko_1d للتفاعل والإجابة على الأسئلة!";
-            } 
-            
-            if (lower.includes("سلام") || lower.includes("مرحبا") || lower.includes("هلا") || lower.includes("أهلا")) {
-                return "وعليكم السلام ورحمة الله! يسعدني الحديث معك، كيف يمكنني مساعدتك؟";
+            }
+            if (lower.includes("هل انت ذكاء") || lower.includes("هل أنت ذكاء") || lower.includes("ذكاء اصطناعي")) {
+                return "نعم، أنا ذكاء اصطناعي باسم SAIKO AI تم تطويري للمساعدة والإجابة على استفساراتك!";
             }
 
+            // 3. الأسئلة العامة والمعرفية
+            if (lower.includes("عدد ناس") || lower.includes("سكان العالم") || lower.includes("عدد البشر")) {
+                return "يبلغ عدد سكان العالم حالياً أكثر من 8 مليارات نسمة تقريباً!";
+            }
+            if (lower.includes("سلام") || lower.includes("مرحبا") || lower.includes("هلا") || lower.includes("أهلا")) {
+                return "وعليكم السلام ورحمة الله! يسعدني الحديث معك، كيف يمكنني مساعدتك اليوم؟";
+            }
             if (lower.includes("كيف حالك") || lower.includes("اخبارك") || lower.includes("علومك")) {
                 return "أنظمتي تعمل بكفاءة ممتازة وجاهز لأي سؤال تطرحه علي الآن!";
             }
-
             if (lower.includes("شكرا") || lower.includes("شكراً")) {
-                return "العفو! أنا دائماً هنا في خدمتك برعاية المطور @ayko_1d.";
+                return "العفو! أنا دائماً في خدمتك برعاية المطور @ayko_1d.";
             }
 
-            // 3. رد تفاعلي متناغم مع النص
-            return `تحدثت عن "${txt}".. كذكاء اصطناعي سايكو، أنا هنا لمناقشة هذا الموضوع معك! هل لديك سؤال محدد حول ذلك؟`;
+            // 4. رد ذكي مرن لأي سؤال آخر
+            return `سؤال مميز حول "${txt}"! بصفتي SAIKO AI، أنصحك بالبحث في هذا الموضوع أكثر أو صياغة السؤال بشكل أوضح لتحديد الإجابة بالضبط.`;
         }
 
         function sendMessage() {
@@ -79,7 +83,6 @@
 
             const chatBox = document.getElementById("chat-box");
 
-            // عرض رسالة المستخدم
             const userMsgDiv = document.createElement("div");
             userMsgDiv.className = "msg user";
             userMsgDiv.innerText = message;
@@ -87,7 +90,6 @@
 
             inputField.value = "";
 
-            // توليد الرد المباشر مع زر استماع اختياري
             setTimeout(() => {
                 const botReply = getSaikoResponse(message);
                 const botMsgDiv = document.createElement("div");
