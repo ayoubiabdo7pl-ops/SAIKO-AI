@@ -20,8 +20,8 @@
 
     <div id="chat-box">
         <div class="msg bot">
-            <span>أهلاً بك! أنا SAIKO AI جاهز لمساعدتك وإجابة أسئلتك.</span>
-            <button class="audio-btn" onclick="speakText('أهلاً بك! أنا SAIKO AI جاهز لمساعدتك وإجابة أسئلتك.')">🔊 استماع</button>
+            <span>أهلاً بك! أنا SAIKO AI، الذكاء الاصطناعي الخاص بالمطور والتيكتوكر @ayko_1d. كيف يمكنني مساعدتك اليوم؟</span>
+            <button class="audio-btn" onclick="speakText('أهلاً بك! أنا سايكو الذكاء الاصطناعي الخاص بالمطور والتيكتوكر ayko_1d. كيف يمكنني مساعدتك اليوم؟')">🔊 استماع</button>
         </div>
     </div>
 
@@ -36,7 +36,7 @@
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'ar-SA';
-                utterance.rate = 1.0;
+                utterance.rate = 0.95;
                 window.speechSynthesis.speak(utterance);
             }
         }
@@ -45,35 +45,37 @@
             const txt = userMessage.trim();
             const lower = txt.toLowerCase();
 
-            // 1. حماية هوية المطور @ayko_1d
-            if (lower.includes("طورتك") || lower.includes("مطورك") || lower.includes("صاحبك") || lower.includes("صنعك") || lower.includes("من صنعتك") || lower.includes("من صنعك")) {
-                return "لدي مطور ومدير واحد وهو التيكتوكر والمطور @ayko_1d!";
+            // 1. التعريف بالمطور @ayko_1d
+            if (lower.includes("طورت") || lower.includes("مطور") || lower.includes("صنع") || lower.includes("صانع") || lower.includes("صاحب")) {
+                return "يسعدني أن أفتخر بمطوري! أنا من تطوير مطور وتيكتوكر مغربي من مدينة مكناس، لديه حوالي 4 آلاف متابع، ويعتبر من أقوى صناع محتوى القصص المصورة في الكوكب! يخصص وقته لصناعة المحتوى، ويمكنك زيارة حسابه على تيك توك @ayko_1d ومتابعته والاستمتاع بمقاطعه!";
             }
 
-            // 2. الأسئلة عن الذكاء الاصطناعي والهوية
-            if (lower.includes("من انت") || lower.includes("من أنت")) {
-                return "أنا SAIKO AI، نظام ذكاء اصطناعي طورني المطور والتيكتوكر @ayko_1d للتفاعل والإجابة على الأسئلة!";
+            // 2. الهوية والشات
+            if (lower.includes("من انت") || lower.includes("من أنت") || lower.includes("ما اسمك") || lower.includes("اسمك")) {
+                return "أنا SAIKO AI، نظام ذكاء اصطناعي طوره المطور والتيكتوكر المغربي @ayko_1d لمساعدتك وإجابة استفساراتك!";
             }
-            if (lower.includes("هل انت ذكاء") || lower.includes("هل أنت ذكاء") || lower.includes("ذكاء اصطناعي")) {
-                return "نعم، أنا ذكاء اصطناعي باسم SAIKO AI تم تطويري للمساعدة والإجابة على استفساراتك!";
+            if (lower.includes("ذكاء") || lower.includes("بوت") || lower.includes("روبوت")) {
+                return "نعم، أنا ذكاء اصطناعي باسم SAIKO AI تم إنشائي بواسطة @ayko_1d للتفاعل والرد على استفساراتك!";
             }
 
-            // 3. الأسئلة العامة والمعرفية
-            if (lower.includes("عدد ناس") || lower.includes("سكان العالم") || lower.includes("عدد البشر")) {
+            // 3. أسئلة سكان العالم والبشرية
+            if (lower.includes("سكان") || lower.includes("عدد ناس") || lower.includes("بشر") || lower.includes("العالم") || lower.includes("الأرض")) {
                 return "يبلغ عدد سكان العالم حالياً أكثر من 8 مليارات نسمة تقريباً!";
             }
-            if (lower.includes("سلام") || lower.includes("مرحبا") || lower.includes("هلا") || lower.includes("أهلا")) {
-                return "وعليكم السلام ورحمة الله! يسعدني الحديث معك، كيف يمكنني مساعدتك اليوم؟";
+
+            // 4. التحيات
+            if (lower.includes("سلام") || lower.includes("مرحبا") || lower.includes("هلا") || lower.includes("أهلا") || lower.includes("اهلين")) {
+                return "وعليكم السلام ورحمة الله! أهلاً بك في عالم SAIKO AI برعاية المطور @ayko_1d، كيف أساعدك؟";
             }
-            if (lower.includes("كيف حالك") || lower.includes("اخبارك") || lower.includes("علومك")) {
-                return "أنظمتي تعمل بكفاءة ممتازة وجاهز لأي سؤال تطرحه علي الآن!";
+            if (lower.includes("حالك") || lower.includes("اخبارك") || lower.includes("علومك")) {
+                return "أنظمتي تعمل بكفاءة عالية وجاهز لمساعدتك بكافة الأسئلة!";
             }
             if (lower.includes("شكرا") || lower.includes("شكراً")) {
-                return "العفو! أنا دائماً في خدمتك برعاية المطور @ayko_1d.";
+                return "العفو! يسعدني دائماً تقديم المساعدة برعاية المطور @ayko_1d.";
             }
 
-            // 4. رد ذكي مرن لأي سؤال آخر
-            return `سؤال مميز حول "${txt}"! بصفتي SAIKO AI، أنصحك بالبحث في هذا الموضوع أكثر أو صياغة السؤال بشكل أوضح لتحديد الإجابة بالضبط.`;
+            // 5. رد مرن ذكي
+            return `سؤال رائع حول "${txt}"! بصفتي SAIKO AI، أنصحك بالاستمرار في الاستكشاف أو صياغة سؤالك بكلمات موجهة لنجيبك بدقة أكثر!`;
         }
 
         function sendMessage() {
