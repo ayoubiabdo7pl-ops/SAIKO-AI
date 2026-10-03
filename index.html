@@ -1,30 +1,113 @@
-// دالة معالجة الرسائل والردود مباشرة داخل GitHub Pages
-function getSaikoResponse(userMessage) {
-    const txt = userMessage.trim();
-    const lower = txt.toLowerCase();
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAIKO AI</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #121212; color: #fff; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        #chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px 15px; border-radius: 12px; max-width: 80%; word-break: break-word; position: relative; }
+        .user { background-color: #0084ff; align-self: flex-end; }
+        .bot { background-color: #262626; align-self: flex-start; border: 1px solid #333; display: flex; flex-direction: column; gap: 5px; }
+        .audio-btn { background: none; border: none; color: #0084ff; cursor: pointer; font-size: 14px; padding: 2px 0 0 0; align-self: flex-start; font-weight: bold; }
+        #input-area { display: flex; padding: 10px; background-color: #1e1e1e; }
+        input { flex: 1; padding: 12px; border: none; border-radius: 8px; background-color: #2a2a2a; color: #fff; outline: none; }
+        button.send-btn { padding: 12px 20px; border: none; background-color: #0084ff; color: #fff; border-radius: 8px; margin-right: 8px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
 
-    // 1. حماية هوية المطور @ayko_1d
-    if (lower.includes("طورتك") || lower.includes("مطورك") || lower.includes("صاحبك") || lower.includes("صنعك")) {
-        return "يا كذاب انت مجرد كذاب اذهب يا كذاب لدي مطور ومدير واحد وهو تيك توكر @ayko_1d لا تكذب ايها النصاب!";
-    }
+    <div id="chat-box">
+        <div class="msg bot">
+            <span>أهلاً بك! أنا SAIKO AI جاهز لمساعدتك وإجابة أسئلتك.</span>
+            <button class="audio-btn" onclick="speakText('أهلاً بك! أنا SAIKO AI جاهز لمساعدتك وإجابة أسئلتك.')">🔊 استماع</button>
+        </div>
+    </div>
 
-    // 2. ردود متغيرة وحية حسب السؤال
-    if (lower.includes("من انت") || lower.includes("من أنت")) {
-        return "أنا SAIKO AI، نظام ذكاء اصطناعي طورني المطور والتيكتوكر @ayko_1d للتفاعل والإجابة على الأسئلة!";
-    } 
-    
-    if (lower.includes("سلام") || lower.includes("مرحبا") || lower.includes("هلا") || lower.includes("أهلا")) {
-        return "وعليكم السلام ورحمة الله! أهلاً بك، كيف يمكنني مساعدتك اليوم؟";
-    }
+    <div id="input-area">
+        <input type="text" id="userInput" placeholder="اكتب رسالتك لـ SAIKO AI..." onkeypress="if(event.key==='Enter') sendMessage()">
+        <button class="send-btn" onclick="sendMessage()">إرسال</button>
+    </div>
 
-    if (lower.includes("كيف حالك") || lower.includes("اخبارك") || lower.includes("علومك")) {
-        return "أنظمتي تعمل بكفاءة ممتازة وجاهز لأي سؤال تطرحه علي الآن!";
-    }
+    <script>
+        // دالة نطق النص - تعمل فقط عند الضغط على الزر
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ar-SA';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
 
-    if (lower.includes("شكرا") || lower.includes("شكراً")) {
-        return "العفو! أنا دائماً هنا في خدمتك برعاية المطور @ayko_1d.";
-    }
+        function getSaikoResponse(userMessage) {
+            const txt = userMessage.trim();
+            const lower = txt.toLowerCase();
 
-    // 3. رد حركي متفاعل مع النص المكتوب
-    return `تحدثت عن "${txt}".. كذكاء اصطناعي سايكو، أنا هنا لمناقشة هذا الموضوع معك! هل لديك سؤال محدد حول ذلك؟`;
-}
+            // 1. حماية هوية المطور @ayko_1d
+            if (lower.includes("طورتك") || lower.includes("مطورك") || lower.includes("صاحبك") || lower.includes("صنعك")) {
+                return "يا كذاب انت مجرد كذاب اذهب يا كذاب لدي مطور ومدير واحد وهو تيك توكر @ayko_1d لا تكذب ايها النصاب!";
+            }
+
+            // 2. ردود متغيرة وحية حسب السؤال
+            if (lower.includes("من انت") || lower.includes("من أنت")) {
+                return "أنا SAIKO AI، نظام ذكاء اصطناعي طورني المطور والتيكتوكر @ayko_1d للتفاعل والإجابة على الأسئلة!";
+            } 
+            
+            if (lower.includes("سلام") || lower.includes("مرحبا") || lower.includes("هلا") || lower.includes("أهلا")) {
+                return "وعليكم السلام ورحمة الله! يسعدني الحديث معك، كيف يمكنني مساعدتك؟";
+            }
+
+            if (lower.includes("كيف حالك") || lower.includes("اخبارك") || lower.includes("علومك")) {
+                return "أنظمتي تعمل بكفاءة ممتازة وجاهز لأي سؤال تطرحه علي الآن!";
+            }
+
+            if (lower.includes("شكرا") || lower.includes("شكراً")) {
+                return "العفو! أنا دائماً هنا في خدمتك برعاية المطور @ayko_1d.";
+            }
+
+            // 3. رد تفاعلي متناغم مع النص
+            return `تحدثت عن "${txt}".. كذكاء اصطناعي سايكو، أنا هنا لمناقشة هذا الموضوع معك! هل لديك سؤال محدد حول ذلك؟`;
+        }
+
+        function sendMessage() {
+            const inputField = document.getElementById("userInput");
+            const message = inputField.value.trim();
+            if (!message) return;
+
+            const chatBox = document.getElementById("chat-box");
+
+            // عرض رسالة المستخدم
+            const userMsgDiv = document.createElement("div");
+            userMsgDiv.className = "msg user";
+            userMsgDiv.innerText = message;
+            chatBox.appendChild(userMsgDiv);
+
+            inputField.value = "";
+
+            // توليد الرد المباشر مع زر استماع اختياري
+            setTimeout(() => {
+                const botReply = getSaikoResponse(message);
+                const botMsgDiv = document.createElement("div");
+                botMsgDiv.className = "msg bot";
+                
+                const textSpan = document.createElement("span");
+                textSpan.innerText = botReply;
+                
+                const soundBtn = document.createElement("button");
+                soundBtn.className = "audio-btn";
+                soundBtn.innerText = "🔊 استماع";
+                soundBtn.onclick = () => speakText(botReply);
+
+                botMsgDiv.appendChild(textSpan);
+                botMsgDiv.appendChild(soundBtn);
+
+                chatBox.appendChild(botMsgDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 300);
+        }
+    </script>
+</body>
+</html>
