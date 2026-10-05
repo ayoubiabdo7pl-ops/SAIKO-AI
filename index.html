@@ -7,10 +7,10 @@
     <style>
         body { font-family: Arial, sans-serif; background-color: #121212; color: #fff; margin: 0; display: flex; flex-direction: column; height: 100vh; }
         #chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px 15px; border-radius: 12px; max-width: 80%; word-break: break-word; position: relative; }
+        .msg { padding: 10px 15px; border-radius: 12px; max-width: 80%; word-break: break-word; position: relative; line-height: 1.5; }
         .user { background-color: #0084ff; align-self: flex-end; }
-        .bot { background-color: #262626; align-self: flex-start; border: 1px solid #333; display: flex; flex-direction: column; gap: 5px; }
-        .audio-btn { background: none; border: none; color: #0084ff; cursor: pointer; font-size: 14px; padding: 2px 0 0 0; align-self: flex-start; font-weight: bold; }
+        .bot { background-color: #262626; align-self: flex-start; border: 1px solid #333; display: flex; flex-direction: column; gap: 8px; }
+        .audio-btn { background: none; border: 1px solid #0084ff; color: #0084ff; border-radius: 6px; cursor: pointer; font-size: 13px; padding: 4px 8px; align-self: flex-start; font-weight: bold; }
         #input-area { display: flex; padding: 10px; background-color: #1e1e1e; }
         input { flex: 1; padding: 12px; border: none; border-radius: 8px; background-color: #2a2a2a; color: #fff; outline: none; }
         button.send-btn { padding: 12px 20px; border: none; background-color: #0084ff; color: #fff; border-radius: 8px; margin-right: 8px; cursor: pointer; font-weight: bold; }
@@ -20,17 +20,20 @@
 
     <div id="chat-box">
         <div class="msg bot">
-            <span>أهلاً بك! أنا SAIKO AI، الذكاء الاصطناعي الخاص بالمطور والتيكتوكر @ayko_1d. كيف يمكنني مساعدتك اليوم؟</span>
-            <button class="audio-btn" onclick="speakText('أهلاً بك! أنا سايكو الذكاء الاصطناعي الخاص بالمطور والتيكتوكر ayko_1d. كيف يمكنني مساعدتك اليوم؟')">🔊 استماع</button>
+            <span>أهلاً بك! أنا SAIKO AI، الذكاء الاصطناعي الخاص بالمطور والتيكتوكر @ayko_1d. اسألني أي سؤال وسأجيبك فوراً!</span>
+            <button class="audio-btn" onclick="speakText('أهلاً بك! أنا سايكو الذكاء الاصطناعي الخاص بالمطور والتيكتوكر ayko_1d. اسألني أي سؤال وسأجيبك فوراً!')">🔊 استماع</button>
         </div>
     </div>
 
     <div id="input-area">
-        <input type="text" id="userInput" placeholder="اكتب رسالتك لـ SAIKO AI..." onkeypress="if(event.key==='Enter') sendMessage()">
+        <input type="text" id="userInput" placeholder="اكتب سؤالك لـ SAIKO AI..." onkeypress="if(event.key==='Enter') sendMessage()">
         <button class="send-btn" onclick="sendMessage()">إرسال</button>
     </div>
 
     <script>
+        // ضع رابط الـ Worker الخاص بك هنا مكان الرابط المكتوب
+        const WORKER_URL = "ضَع_رَابِط_الـWORKER_هُنَا";
+
         function speakText(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -41,50 +44,14 @@
             }
         }
 
-        function getSaikoResponse(userMessage) {
-            const txt = userMessage.trim();
-            const lower = txt.toLowerCase();
-
-            // 1. التعريف بالمطور @ayko_1d
-            if (lower.includes("طورت") || lower.includes("مطور") || lower.includes("صنع") || lower.includes("صانع") || lower.includes("صاحب")) {
-                return "يسعدني أن أفتخر بمطوري! أنا من تطوير مطور وتيكتوكر مغربي من مدينة مكناس، لديه حوالي 4 آلاف متابع، ويعتبر من أقوى صناع محتوى القصص المصورة في الكوكب! يخصص وقته لصناعة المحتوى، ويمكنك زيارة حسابه على تيك توك @ayko_1d ومتابعته والاستمتاع بمقاطعه!";
-            }
-
-            // 2. الهوية والشات
-            if (lower.includes("من انت") || lower.includes("من أنت") || lower.includes("ما اسمك") || lower.includes("اسمك")) {
-                return "أنا SAIKO AI، نظام ذكاء اصطناعي طوره المطور والتيكتوكر المغربي @ayko_1d لمساعدتك وإجابة استفساراتك!";
-            }
-            if (lower.includes("ذكاء") || lower.includes("بوت") || lower.includes("روبوت")) {
-                return "نعم، أنا ذكاء اصطناعي باسم SAIKO AI تم إنشائي بواسطة @ayko_1d للتفاعل والرد على استفساراتك!";
-            }
-
-            // 3. أسئلة سكان العالم والبشرية
-            if (lower.includes("سكان") || lower.includes("عدد ناس") || lower.includes("بشر") || lower.includes("العالم") || lower.includes("الأرض")) {
-                return "يبلغ عدد سكان العالم حالياً أكثر من 8 مليارات نسمة تقريباً!";
-            }
-
-            // 4. التحيات
-            if (lower.includes("سلام") || lower.includes("مرحبا") || lower.includes("هلا") || lower.includes("أهلا") || lower.includes("اهلين")) {
-                return "وعليكم السلام ورحمة الله! أهلاً بك في عالم SAIKO AI برعاية المطور @ayko_1d، كيف أساعدك؟";
-            }
-            if (lower.includes("حالك") || lower.includes("اخبارك") || lower.includes("علومك")) {
-                return "أنظمتي تعمل بكفاءة عالية وجاهز لمساعدتك بكافة الأسئلة!";
-            }
-            if (lower.includes("شكرا") || lower.includes("شكراً")) {
-                return "العفو! يسعدني دائماً تقديم المساعدة برعاية المطور @ayko_1d.";
-            }
-
-            // 5. رد مرن ذكي
-            return `سؤال رائع حول "${txt}"! بصفتي SAIKO AI، أنصحك بالاستمرار في الاستكشاف أو صياغة سؤالك بكلمات موجهة لنجيبك بدقة أكثر!`;
-        }
-
-        function sendMessage() {
+        async function sendMessage() {
             const inputField = document.getElementById("userInput");
             const message = inputField.value.trim();
             if (!message) return;
 
             const chatBox = document.getElementById("chat-box");
 
+            // عرض رسالة المستخدم
             const userMsgDiv = document.createElement("div");
             userMsgDiv.className = "msg user";
             userMsgDiv.innerText = message;
@@ -92,25 +59,39 @@
 
             inputField.value = "";
 
-            setTimeout(() => {
-                const botReply = getSaikoResponse(message);
-                const botMsgDiv = document.createElement("div");
-                botMsgDiv.className = "msg bot";
-                
+            // إظهار نص جاري التفكير
+            const loadingDiv = document.createElement("div");
+            loadingDiv.className = "msg bot";
+            loadingDiv.innerText = "جاري التفكير...";
+            chatBox.appendChild(loadingDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const res = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await res.json();
+                const botReply = data.reply || "حدث خطأ أثناء الرد.";
+
+                loadingDiv.innerHTML = "";
                 const textSpan = document.createElement("span");
                 textSpan.innerText = botReply;
-                
+
                 const soundBtn = document.createElement("button");
                 soundBtn.className = "audio-btn";
                 soundBtn.innerText = "🔊 استماع";
                 soundBtn.onclick = () => speakText(botReply);
 
-                botMsgDiv.appendChild(textSpan);
-                botMsgDiv.appendChild(soundBtn);
+                loadingDiv.appendChild(textSpan);
+                loadingDiv.appendChild(soundBtn);
+            } catch (err) {
+                loadingDiv.innerText = "تعذر الاتصال بالخادم الذكي.";
+            }
 
-                chatBox.appendChild(botMsgDiv);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 300);
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
 </body>
