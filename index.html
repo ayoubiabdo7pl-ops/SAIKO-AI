@@ -3,95 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAIKO AI</title>
+    <title>SAYKO AI CHAT</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #121212; color: #fff; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        #chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px 15px; border-radius: 12px; max-width: 80%; word-break: break-word; position: relative; line-height: 1.5; }
-        .user { background-color: #0084ff; align-self: flex-end; }
-        .bot { background-color: #262626; align-self: flex-start; border: 1px solid #333; display: flex; flex-direction: column; gap: 8px; }
-        .audio-btn { background: none; border: 1px solid #0084ff; color: #0084ff; border-radius: 6px; cursor: pointer; font-size: 13px; padding: 4px 8px; align-self: flex-start; font-weight: bold; }
-        #input-area { display: flex; padding: 10px; background-color: #1e1e1e; }
-        input { flex: 1; padding: 12px; border: none; border-radius: 8px; background-color: #2a2a2a; color: #fff; outline: none; }
-        button.send-btn { padding: 12px 20px; border: none; background-color: #0084ff; color: #fff; border-radius: 8px; margin-right: 8px; cursor: pointer; font-weight: bold; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; display: flex; flex-direction: column; height: 100vh; justify-content: space-between; padding: 20px; }
+        header { text-align: center; padding: 10px 0; border-bottom: 1px solid #334155; }
+        header h1 { color: #38bdf8; font-size: 1.8rem; }
+        #chat-container { flex: 1; overflow-y: auto; margin: 20px 0; padding: 10px; background: #1e293b; border-radius: 12px; display: flex; flex-direction: column; gap: 12px; }
+        .message { padding: 10px 14px; border-radius: 8px; max-width: 80%; line-height: 1.5; word-wrap: break-word; }
+        .user { background-color: #0284c7; color: white; align-self: flex-end; border-bottom-left-radius: 0; }
+        .sayko { background-color: #334155; color: #f1f5f9; align-self: flex-start; border-bottom-right-radius: 0; }
+        .input-box { display: flex; gap: 10px; }
+        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; outline: none; font-size: 1rem; }
+        button { padding: 12px 24px; border-radius: 8px; border: none; background: #38bdf8; color: #0f172a; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        button:hover { background: #0284c7; color: white; }
     </style>
 </head>
 <body>
 
-    <div id="chat-box">
-        <div class="msg bot">
-            <span>أهلاً بك! أنا SAIKO AI، الذكاء الاصطناعي الخاص بالمطور والتيكتوكر @ayko_1d. اسألني أي سؤال وسأجيبك فوراً!</span>
-            <button class="audio-btn" onclick="speakText('أهلاً بك! أنا سايكو الذكاء الاصطناعي الخاص بالمطور والتيكتوكر ayko_1d. اسألني أي سؤال وسأجيبك فوراً!')">🔊 استماع</button>
-        </div>
+    <header>
+        <h1>SAYKO AI</h1>
+    </header>
+
+    <div id="chat-container">
+        <div class="message sayko">مرحباً بك! أنا SAYKO AI، كيف يمكنني مساعدتك اليوم؟</div>
     </div>
 
-    <div id="input-area">
-        <input type="text" id="userInput" placeholder="اكتب سؤالك لـ SAIKO AI..." onkeypress="if(event.key==='Enter') sendMessage()">
-        <button class="send-btn" onclick="sendMessage()">إرسال</button>
+    <div class="input-box">
+        <input type="text" id="user-input" placeholder="اكتب رسالتك هنا..." onkeypress="if(event.key === 'Enter') sendMessage()">
+        <button onclick="sendMessage()">إرسال</button>
     </div>
 
     <script>
-        // رابط الـ Worker الخاص بك المدمج مباشرة
-        const WORKER_URL = "https://aykotik.ayoubiabdo7-pl.workers.dev/";
-
-        function speakText(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'ar-SA';
-                utterance.rate = 0.95;
-                window.speechSynthesis.speak(utterance);
-            }
-        }
-
         async function sendMessage() {
-            const inputField = document.getElementById("userInput");
-            const message = inputField.value.trim();
-            if (!message) return;
+            const inputField = document.getElementById("user-input");
+            const chatContainer = document.getElementById("chat-container");
+            const messageText = inputField.value.trim();
 
-            const chatBox = document.getElementById("chat-box");
+            if (!messageText) return;
 
-            // عرض رسالة المستخدم
+            // 1. إضافة رسالة المستخدم إلى المحادثة
             const userMsgDiv = document.createElement("div");
-            userMsgDiv.className = "msg user";
-            userMsgDiv.innerText = message;
-            chatBox.appendChild(userMsgDiv);
+            userMsgDiv.className = "message user";
+            userMsgDiv.innerText = messageText;
+            chatContainer.appendChild(userMsgDiv);
 
             inputField.value = "";
+            chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            // إظهار نص جاري التفكير
-            const loadingDiv = document.createElement("div");
-            loadingDiv.className = "msg bot";
-            loadingDiv.innerText = "جاري التفكير...";
-            chatBox.appendChild(loadingDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            // 2. إنشاء عنصر لرد الذكاء الاصطناعي مع مؤشر انتظار
+            const saykoMsgDiv = document.createElement("div");
+            saykoMsgDiv.className = "message sayko";
+            saykoMsgDiv.innerText = "جاري التفكير...";
+            chatContainer.appendChild(saykoMsgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
-                const res = await fetch(WORKER_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: message })
+                // إرسال الطلب إلى مزود مجاني يستجيب مباشرة عبر الـ Fetch بدون مفتاح مفروض
+                const response = await fetch("https://text.pollinations.ai/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        messages: [
+                            { role: "system", content: "أنت SAYKO AI، مساعد ذكي ومباشر يجيب بوضوح وود ودقة باللغة العربية." },
+                            { role: "user", content: messageText }
+                        ],
+                        model: "openai"
+                    })
                 });
 
-                const data = await res.json();
-                const botReply = data.reply || "حدث خطأ أثناء الرد.";
+                if (!response.ok) throw new Error("تعذر جلب الرد");
 
-                loadingDiv.innerHTML = "";
-                const textSpan = document.createElement("span");
-                textSpan.innerText = botReply;
+                const replyText = await response.text();
+                
+                // عرض الرد
+                saykoMsgDiv.innerText = replyText;
 
-                const soundBtn = document.createElement("button");
-                soundBtn.className = "audio-btn";
-                soundBtn.innerText = "🔊 استماع";
-                soundBtn.onclick = () => speakText(botReply);
-
-                loadingDiv.appendChild(textSpan);
-                loadingDiv.appendChild(soundBtn);
-            } catch (err) {
-                loadingDiv.innerText = "تعذر الاتصال بالخادم الذكي.";
+            } catch (error) {
+                console.error(error);
+                saykoMsgDiv.innerText = "عذراً، حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.";
             }
 
-            chatBox.scrollTop = chatBox.scrollHeight;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
     </script>
 </body>
