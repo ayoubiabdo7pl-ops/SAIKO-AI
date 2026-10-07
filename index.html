@@ -1,46 +1,26 @@
-<script>
-    async function sendMessage() {
-        const inputField = document.getElementById("user-input");
-        const chatContainer = document.getElementById("chat-container");
-        const messageText = inputField.value.trim();
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAYKO AI</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background-color: #0f172a; color: #fff; display: flex; flex-direction: column; height: 100vh; justify-content: space-between; padding: 15px; }
+        header { text-align: center; padding: 10px; border-bottom: 1px solid #334155; }
+        #chat-container { flex: 1; overflow-y: auto; margin: 15px 0; padding: 10px; background: #1e293b; border-radius: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 10px 14px; border-radius: 8px; max-width: 85%; line-height: 1.4; word-break: break-word; }
+        .user { background: #0284c7; align-self: flex-end; }
+        .sayko { background: #334155; align-self: flex-start; }
+        .input-box { display: flex; gap: 8px; }
+        input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #fff; outline: none; }
+        button { padding: 12px 20px; border-radius: 6px; border: none; background: #0284c7; color: #fff; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
 
-        if (!messageText) return;
+    <header>
+        <h2>SAYKO AI</h2>
+    </header>
 
-        // 1. إضافة رسالة المستخدم
-        const userMsgDiv = document.createElement("div");
-        userMsgDiv.className = "message user";
-        userMsgDiv.innerText = messageText;
-        chatContainer.appendChild(userMsgDiv);
-
-        inputField.value = "";
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-
-        // 2. إضافة فقرة رد SAYKO AI
-        const saykoMsgDiv = document.createElement("div");
-        saykoMsgDiv.className = "message sayko";
-        saykoMsgDiv.innerText = "جاري التفكير...";
-        chatContainer.appendChild(saykoMsgDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-
-        try {
-            // استخدام رابط آمن ومباشر يعمل بدون حظر CORS
-            const prompt = encodeURIComponent(`أنت SAYKO AI، مساعد ذكي ومباشر. أجب على السؤال التالي بوضوح وبصيغة قصيرة باللغة العربية: ${messageText}`);
-            const apiUrl = `https://text.pollinations.ai/${prompt}?model=openai&cache=false`;
-
-            const response = await fetch(apiUrl);
-
-            if (!response.ok) throw new Error("Network response was not ok");
-
-            const replyText = await response.text();
-            
-            // عرض الرد فوراً
-            saykoMsgDiv.innerText = replyText.trim();
-
-        } catch (error) {
-            console.error("Error:", error);
-            saykoMsgDiv.innerText = "عذراً، تعذر جلب الرد حالياً. يرجى إعادة المحاولة.";
-        }
-
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-</script>
+    <div id="chat
