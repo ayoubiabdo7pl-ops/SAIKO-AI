@@ -1,26 +1,243 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAYKO AI</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background-color: #0f172a; color: #fff; display: flex; flex-direction: column; height: 100vh; justify-content: space-between; padding: 15px; }
-        header { text-align: center; padding: 10px; border-bottom: 1px solid #334155; }
-        #chat-container { flex: 1; overflow-y: auto; margin: 15px 0; padding: 10px; background: #1e293b; border-radius: 10px; display: flex; flex-direction: column; gap: 10px; }
-        .message { padding: 10px 14px; border-radius: 8px; max-width: 85%; line-height: 1.4; word-break: break-word; }
-        .user { background: #0284c7; align-self: flex-end; }
-        .sayko { background: #334155; align-self: flex-start; }
-        .input-box { display: flex; gap: 8px; }
-        input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #fff; outline: none; }
-        button { padding: 12px 20px; border-radius: 6px; border: none; background: #0284c7; color: #fff; font-weight: bold; cursor: pointer; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAIKO AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #10111b;
+      color: white;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 18px;
+      background: #191a29;
+      border-bottom: 1px solid #303149;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      display: grid;
+      place-items: center;
+      font-size: 23px;
+    }
+
+    header h2 {
+      margin: 0 0 5px;
+      font-size: 19px;
+    }
+
+    header p {
+      margin: 0;
+      color: #b8b8ce;
+      font-size: 12px;
+    }
+
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .message {
+      max-width: 85%;
+      padding: 12px 15px;
+      border-radius: 17px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background: #25263b;
+      border-bottom-left-radius: 5px;
+    }
+
+    .user {
+      align-self: flex-end;
+      background: #7846db;
+      border-bottom-right-radius: 5px;
+    }
+
+    .typing {
+      color: #c8b4ff;
+      font-size: 13px;
+      padding: 0 18px 10px;
+    }
+
+    form {
+      display: flex;
+      gap: 9px;
+      padding: 13px;
+      background: #191a29;
+      border-top: 1px solid #303149;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid #393951;
+      border-radius: 14px;
+      outline: none;
+      background: #25263b;
+      color: white;
+      font-size: 16px;
+    }
+
+    input:focus {
+      border-color: #a855f7;
+    }
+
+    button {
+      border: 0;
+      border-radius: 13px;
+      padding: 0 19px;
+      background: #914df0;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+    }
+  </style>
 </head>
+
 <body>
+  <header>
+    <div class="avatar">🌸</div>
+    <div>
+      <h2>SAIKO AI</h2>
+      <p>مساعدتك الذكية ✨</p>
+    </div>
+  </header>
 
-    <header>
-        <h2>SAYKO AI</h2>
-    </header>
+  <main id="messages" aria-live="polite">
+    <div class="message bot">
+      مرحبًا! أنا سايكو 💗
+      أنا هنا للدردشة معك.
+      كيف حالك اليوم؟
+    </div>
+  </main>
 
-    <div id="chat
+  <div id="typing" class="typing" hidden>
+    سايكو تفكر...
+  </div>
+
+  <form id="chatForm">
+    <input
+      id="userInput"
+      type="text"
+      placeholder="اكتب رسالتك لسايكو..."
+      autocomplete="off"
+      required
+    >
+    <button id="sendBtn" type="submit">إرسال</button>
+  </form>
+
+  <script>
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("userInput");
+    const messages = document.getElementById("messages");
+    const typing = document.getElementById("typing");
+    const sendBtn = document.getElementById("sendBtn");
+
+    // سنضع رابط خادم الذكاء الاصطناعي هنا في الخطوة التالية.
+    const API_URL = "YOUR_BACKEND_URL/chat";
+
+    const history = [];
+
+    function addMessage(text, role) {
+      const bubble = document.createElement("div");
+      bubble.className = "message " + role;
+      bubble.textContent = text;
+      messages.appendChild(bubble);
+      messages.scrollTop = messages.scrollHeight;
+      return bubble;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const text = input.value.trim();
+      if (!text || sendBtn.disabled) return;
+
+      addMessage(text, "user");
+      input.value = "";
+      input.focus();
+
+      history.push({ role: "user", content: text });
+
+      typing.hidden = false;
+      sendBtn.disabled = true;
+
+      try {
+        if (API_URL.startsWith("YOUR_BACKEND_URL")) {
+          throw new Error(
+            "واجهة الشات جاهزة، لكن خادم الذكاء الاصطناعي لم يُربط بعد."
+          );
+        }
+
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ messages: history })
+        });
+
+        if (!response.ok) {
+          throw new Error("تعذر الاتصال بالخادم (" +
+            response.status + ")");
+        }
+
+        const data = await response.json();
+
+        if (typeof data.reply !== "string" || !data.reply.trim()) {
+          throw new Error("لم يصل رد صالح من الخادم.");
+        }
+
+        history.push({
+          role: "assistant",
+          content: data.reply
+        });
+
+        addMessage(data.reply, "bot");
+
+      } catch (error) {
+        addMessage(
+          "عذرًا، لم أتمكن من الرد الآن. " + error.message,
+          "bot"
+        );
+      } finally {
+        typing.hidden = true;
+        sendBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
